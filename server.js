@@ -1,4 +1,5 @@
 const bodyParser = require('body-parser');
+require('dotenv').config();
 const express = require('express');
 const { getMovies, addMovie, editMovie, deleteMovie, getMovieByTitle } = require('./db');
 const { getMoviesAPI } = require('./exteren-api');
@@ -6,7 +7,7 @@ getMoviesAPI
 const { success, fail } = require('./functions');
 const { logRequest } = require('./middleware');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerOpts = {
