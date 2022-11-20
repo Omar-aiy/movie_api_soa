@@ -82,7 +82,7 @@ app.get('/', (req, res) => res.send('Movies API - Omar Aiyyachi <br>' + '<a href
  *                                  example: Bad request
 */
 app.get('/movies', (req, res) => 
-    getMoviesAPI(parseInt(req.query.page))
+    getMovies(parseInt(req.query.page))
         .then(response => res.send(success(response)))
         .catch(error => res.status(400).send(fail(error.message)))
 );
