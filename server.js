@@ -24,7 +24,9 @@ const swaggerSpec = swaggerJSDoc(swaggerOpts);
 
 app.use(bodyParser.json());
 app.use(logRequest)
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.get('/', (req, res) => res.send('Movies API - Omar Aiyyachi\n' + '<a href="https://movie-api-omar.herokuapp.com/api-docs">API Documentation</a>'));
 
 /**
  * @swagger
