@@ -24,9 +24,7 @@ const swaggerSpec = swaggerJSDoc(swaggerOpts);
 
 app.use(bodyParser.json());
 app.use(logRequest)
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-app.get('/', (req, res) => res.send('Movies API - Omar Aiyyachi'));
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 /**
  * @swagger
