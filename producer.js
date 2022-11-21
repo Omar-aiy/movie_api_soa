@@ -7,10 +7,10 @@ const kafka = new Kafka({
 
 async function main() {
     const movie = {
-        title: "OmarPostConsumerlocal", 
-        description: "OmarPostConsumerlocal", 
-        picture_url: "OmarPostConsumerlocal", 
-        price: 17
+        title: "OmarPostConsumerOpHeroku", 
+        description: "OmarPostConsumerOpHeroku", 
+        picture_url: "OmarPostConsumerOpHeroku", 
+        price: 10
     };
 
     const kafka = new Kafka({ clientId: 'my-producer', brokers: ['84.192.118.116:9092']});

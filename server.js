@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
-const { runConsumer } = require('./kafka');
+const { runConsumer, sentConfirmation } = require('./kafka');
 const swaggerOpts = {
     definition: {
         openapi: '3.0.0',
@@ -86,7 +86,7 @@ app.get('/', (req, res) => res.send('Movies API - Omar Aiyyachi <br>' + '<a href
 app.get('/movies', (req, res) => 
     getMovies(parseInt(req.query.page))
         .then(response => res.send(success(response)))
-        .catch(error => res.status(400).send(fail(error.message)))
+        .catch(error => { res.status(400).send(fail(error.message))})
 );
 
 /**
@@ -191,7 +191,15 @@ app.get('/movies/search', (req, res) => {
  *                                  example: Missing fields
  * */
 app.post('/movies', (req, res) => {
-    addMovie(req.body).then(response => res.send(success(response))).catch(error => res.status(400).send(fail(error.message)));
+    addMovie(req.body)
+        .then(async (response) => {
+            await sentConfirmation(req.body, "ok"); 
+            res.send(success(response)); 
+        })
+        .catch(async (error) => { 
+            await sentConfirmation(null, "nok");
+            res.status(400).send(fail(error.message));
+        });
 });
 
 /**
