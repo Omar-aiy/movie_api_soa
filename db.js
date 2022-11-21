@@ -13,7 +13,6 @@ const getMovies = async (page=1) => {
         addMovie(movie).then((res) => console.log(res)).catch(error => console.log(error.message))
         array.push(movie);
     });
-    console.log(array, movies);
     return array;
 };
 

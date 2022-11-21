@@ -3,13 +3,13 @@ require('dotenv').config();
 const express = require('express');
 const { getMovies, addMovie, editMovie, deleteMovie, getMovieByTitle } = require('./db');
 const { getMoviesAPI } = require('./exteren-api');
-getMoviesAPI
 const { success, fail } = require('./functions');
 const { logRequest } = require('./middleware');
 const app = express();
 const port = process.env.PORT || 3000;
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
+const { runConsumer } = require('./kafka');
 const swaggerOpts = {
     definition: {
         openapi: '3.0.0',
@@ -21,6 +21,8 @@ const swaggerOpts = {
     apis: ['./server.js'],
 };
 const swaggerSpec = swaggerJSDoc(swaggerOpts);
+
+runConsumer();
 
 app.use(bodyParser.json());
 app.use(logRequest)

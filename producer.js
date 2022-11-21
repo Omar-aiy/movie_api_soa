@@ -6,24 +6,30 @@ const kafka = new Kafka({
   })
 
 async function main() {
-    const producer = kafka.producer()
+    const movie = {
+        title: "OmarPostConsumerlocal", 
+        description: "OmarPostConsumerlocal", 
+        picture_url: "OmarPostConsumerlocal", 
+        price: 17
+    };
 
-    message = {
-        key: "test",
+    const kafka = new Kafka({ clientId: 'my-producer', brokers: ['84.192.118.116:9092']});
+    const producer = kafka.producer();
+
+    const message = {
+        key: "Movie",
         value: JSON.stringify({
-            id: '3',
-            value: "[book1 book2]"
+            orderId: 1,
+            tmpProductId: 1,
+            status: true,
+            serviceID: 1,
+            product: movie
         })
-    }
-    console.log(message)
-    await producer.connect()
-    await producer.send({
-        topic: 'order',
-        messages: [
-            message,
-        ],
-    })
+    };
+    await producer.connect();
+    await producer.send({ topic: 'movie', messages: [ message ] });
 
-    await producer.disconnect()
+    await producer.disconnect();
 }
+
 main()
