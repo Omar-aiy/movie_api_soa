@@ -12,6 +12,7 @@ const runConsumer = async () => {
     await consumer.run({
       eachMessage: async ({ message }) => {
             const { orderId, tmpProductId, product } = JSON.parse(message.value);
+            console.log(JSON.parse(message.value));
             const movie = {
                 title: product.title,
                 description: product.description,
@@ -79,4 +80,5 @@ const runProducer = async () => {
     await producer.disconnect();
 };
 
-module.exports = { runConsumer, sentConfirmation, runProducer };
+runConsumer();
+//module.exports = { runConsumer, sentConfirmation, runProducer };
