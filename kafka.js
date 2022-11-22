@@ -48,7 +48,7 @@ const sentConfirmation = async ( movie, status ) => {
             orderId: orderId,
             tmpProductId: tmpProductId,
             status: status,
-            serviceID: 2,
+            serviceId: 2,
             product: movie
         })
     };
