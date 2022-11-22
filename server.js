@@ -193,11 +193,11 @@ app.get('/movies/search', (req, res) => {
 app.post('/movies', (req, res) => {
     addMovie(req.body)
         .then(async (response) => {
-            await sentConfirmation(req.body, "ok"); 
+            // await sentConfirmation(req.body, "ok"); 
             res.send(success(response)); 
         })
         .catch(async (error) => { 
-            await sentConfirmation(null, "nok");
+            // await sentConfirmation(null, "nok");
             res.status(400).send(fail(error.message));
         });
 });

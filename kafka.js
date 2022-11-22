@@ -1,9 +1,6 @@
 const axios = require('axios');
 const { Kafka } = require('kafkajs')
 
-let orderId;
-let tmpProductId;
-
 const runConsumer = async () => {
     const kafka = new Kafka({ clientId: 'my-consumer', brokers: ['84.192.118.116:9092'] });
 
@@ -17,8 +14,7 @@ const runConsumer = async () => {
             console.log(JSON.parse(message.value));
 
             const { orderId, tmpProductId, product } = JSON.parse(message.value);
-            orderId = orderId;
-            tmpProductId = tmpProductId;
+
             const movie = {
                 title: product.title,
                 description: product.description,
@@ -28,17 +24,17 @@ const runConsumer = async () => {
             axios.post('https://movie-api-omar.herokuapp.com/movies', movie)
                 .then(async (response) => {
                     console.log(response.data);
-                    await sentConfirmation(movie, "ok");
+                    await sentConfirmation(orderId, tmpProductId, response.data, "ok");
                 })
                 .catch(async (error) => { 
                     console.log(error.response.data);
-                    await sentConfirmation(error.response.data, "nok");
+                    await sentConfirmation(orderId, tmpProductId, error.response.data, "nok");
                 });
         }
     });
 };
 
-const sentConfirmation = async ( movie, status ) => {
+const sentConfirmation = async (orderId, tmpProductId, movie, status ) => {
     const kafka = new Kafka({ clientId: 'my-producer', brokers: ['84.192.118.116:9092'] });
     const producer = kafka.producer();
 
