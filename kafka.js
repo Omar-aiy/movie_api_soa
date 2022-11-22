@@ -11,25 +11,31 @@ const runConsumer = async () => {
     
     await consumer.run({
       eachMessage: async ({ message }) => {
-            const { product } = JSON.parse(message.value.toString());
+            const { orderId, tmpProductId, product } = JSON.parse(message.value.toString());
             axios.post('https://movie-api-omar.herokuapp.com/movies', product)
-                .then(response => console.log(response.data))
-                .catch(error => console.log(error.response.data));
+                .then(async (response) => {
+                    console.log(response.data);
+                    await sentConfirmation(orderId, tmpProductId, product, "ok");
+                })
+                .catch(async (error) => { 
+                    console.log(error.response.data);
+                    sentConfirmation(orderId, tmpProductId, error.response.data, "nok");
+                });
         }
     });
 };
 
-const sentConfirmation = async ( movie, status ) => {
+const sentConfirmation = async ( orderId, tmpProductId, movie, status ) => {
     const kafka = new Kafka({ clientId: 'my-producer', brokers: ['84.192.118.116:9092'] });
     const producer = kafka.producer();
 
     const message = {
         key: "Movie",
         value: JSON.stringify({
-            orderId: 1,
-            tmpProductId: 1,
+            orderId: orderId,
+            tmpProductId: tmpProductId,
             status: status,
-            serviceID: 1,
+            serviceID: 2,
             product: movie
         })
     };
