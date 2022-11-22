@@ -11,7 +11,7 @@ const runConsumer = async () => {
     
     await consumer.run({
       eachMessage: async ({ message }) => {
-            const { orderId, tmpProductId, product } = JSON.parse(message.value.toString());
+            const { orderId, tmpProductId, product } = JSON.parse(message.value);
             const movie = {
                 title: product.title,
                 description: product.description,
