@@ -40,7 +40,8 @@ const editOrAddMovie = async (id=0, {title, description, picture_url, price}, ad
     if (add) {
         try {
             await client.query(`INSERT INTO movie (title, description, picture_url, price) VALUES ('${title}', '${description}', '${picture_url}', ${price}) RETURNING *`);
-            return "Added successfully";
+            const movie = await getMovieByTitle(title);
+            return {message: "Added successfully", movie: movie};
         } catch (error) {
             if (error.message.includes("duplicate key value violates unique constraint")) throw new Error("Movie already exists");
             throw new Error("Failed to add movie")

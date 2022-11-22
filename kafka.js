@@ -21,7 +21,7 @@ const runConsumer = async () => {
                 picture_url: product.picture_url,
                 price: product.price
             };
-            axios.post('https://movie-api-omar.herokuapp.com/movies', movie)
+            axios.post('http://localhost:3000/movies', movie)
                 .then(async (response) => {
                     console.log(response.data);
                     await sentConfirmation(orderId, tmpProductId, movie, "ok");
@@ -45,6 +45,7 @@ const sentConfirmation = async (orderId, tmpProductId, movie, status ) => {
             tmpProductId: tmpProductId,
             status: status,
             serviceId: 2,
+            realProductId: movie.id,
             product: movie
         })
     };
@@ -78,7 +79,7 @@ const runProducer = async () => {
     };
     await producer.connect();
     await producer.send({ topic: 'movie', messages: [ message ] });
-
+    
     await producer.disconnect();
 };
 
