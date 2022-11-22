@@ -7,7 +7,7 @@ const runConsumer = async () => {
     const consumer = kafka.consumer({ groupId: 'movie-consumer' });
       
     await consumer.connect();
-    await consumer.subscribe({ topic: 'movie', fromBeginning: true });
+    await consumer.subscribe({ topic: 'movie' });
     
     await consumer.run({
       eachMessage: async ({ message }) => {
