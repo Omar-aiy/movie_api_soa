@@ -12,14 +12,20 @@ const runConsumer = async () => {
     await consumer.run({
       eachMessage: async ({ message }) => {
             const { orderId, tmpProductId, product } = JSON.parse(message.value.toString());
-            axios.post('https://movie-api-omar.herokuapp.com/movies', product)
+            const movie = {
+                title: product.title,
+                description: product.description,
+                picture_url: product.picture_url,
+                price: product.price
+            };
+            axios.post('https://movie-api-omar.herokuapp.com/movies', movie)
                 .then(async (response) => {
                     console.log(response.data);
-                    await sentConfirmation(orderId, tmpProductId, product, "ok");
+                    await sentConfirmation(orderId, tmpProductId, movie, "ok");
                 })
                 .catch(async (error) => { 
                     console.log(error.response.data);
-                    sentConfirmation(orderId, tmpProductId, error.response.data, "nok");
+                    await sentConfirmation(orderId, tmpProductId, error.response.data, "nok");
                 });
         }
     });
