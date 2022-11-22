@@ -11,7 +11,6 @@ const runConsumer = async () => {
     
     await consumer.run({
       eachMessage: async ({ message }) => {
-            console.log(JSON.parse(message.value));
 
             const { orderId, tmpProductId, product } = JSON.parse(message.value);
 
@@ -21,13 +20,14 @@ const runConsumer = async () => {
                 picture_url: product.picture_url,
                 price: product.price
             };
-            axios.post('http://localhost:3000/movies', movie)
+            console.log(movie);
+            axios.post('https://movie-api-omar.herokuapp.com/movies', movie)
                 .then(async (response) => {
-                    console.log(response.data);
-                    await sentConfirmation(orderId, tmpProductId, movie, "ok");
+                    console.log("Consumer good:", response.data.data.movie);
+                    await sentConfirmation(orderId, tmpProductId, response.data.data.movie, "ok");
                 })
                 .catch(async (error) => { 
-                    console.log(error.response.data);
+                    console.log("Consumer error: ", error.response.data);
                     await sentConfirmation(orderId, tmpProductId, error.response.data, "nok");
                 });
         }
@@ -37,17 +37,20 @@ const runConsumer = async () => {
 const sentConfirmation = async (orderId, tmpProductId, movie, status ) => {
     const kafka = new Kafka({ clientId: 'my-producer', brokers: ['84.192.118.116:9092'] });
     const producer = kafka.producer();
+    const jsonMessage = {
+        orderId: orderId,
+        tmpProductId: tmpProductId,
+        product: movie,
+        status: status,
+        serviceId: 2
+    };
+
+    if (status === "ok") jsonMessage.realProductId = movie.id;
+    console.log("Sent Confirmation:", jsonMessage);
 
     const message = {
         key: "Movie",
-        value: JSON.stringify({
-            orderId: orderId,
-            tmpProductId: tmpProductId,
-            status: status,
-            serviceId: 2,
-            realProductId: movie.id,
-            product: movie
-        })
+        value: JSON.stringify(jsonMessage)
     };
     await producer.connect();
     await producer.send({ topic: 'product-confirmations', messages: [ message ] });
@@ -55,33 +58,4 @@ const sentConfirmation = async (orderId, tmpProductId, movie, status ) => {
     await producer.disconnect();
 };
 
-const runProducer = async () => {
-
-    const movie = {
-        title: "OmarPostConsumer", 
-        description: "OmarPostConsumer", 
-        picture_url: "OmarPostConsumer", 
-        price: 15
-    };
-
-    const kafka = new Kafka({ clientId: 'my-producer', brokers: ['84.192.118.116:9092']});
-    const producer = kafka.producer();
-
-    const message = {
-        key: "Movie",
-        value: JSON.stringify({
-            orderId: 1,
-            tmpProductId: 1,
-            status: true,
-            serviceID: 1,
-            product: movie
-        })
-    };
-    await producer.connect();
-    await producer.send({ topic: 'movie', messages: [ message ] });
-    
-    await producer.disconnect();
-};
-
-//runConsumer();
-module.exports = { runConsumer, sentConfirmation, runProducer };
+module.exports = { runConsumer };
