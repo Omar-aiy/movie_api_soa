@@ -11,8 +11,9 @@ const runConsumer = async () => {
     
     await consumer.run({
       eachMessage: async ({ message }) => {
-            const { orderId, tmpProductId, product } = JSON.parse(message.value);
             console.log(JSON.parse(message.value));
+
+            const { orderId, tmpProductId, product } = JSON.parse(message.value);
             const movie = {
                 title: product.title,
                 description: product.description,
@@ -22,11 +23,11 @@ const runConsumer = async () => {
             axios.post('https://movie-api-omar.herokuapp.com/movies', movie)
                 .then(async (response) => {
                     console.log(response.data);
-                    sentConfirmation(orderId, tmpProductId, movie, "ok");
+                    await sentConfirmation(orderId, tmpProductId, movie, "ok");
                 })
                 .catch(async (error) => { 
                     console.log(error.response.data);
-                    sentConfirmation(orderId, tmpProductId, error.response.data, "nok");
+                    await sentConfirmation(orderId, tmpProductId, error.response.data, "nok");
                 });
         }
     });
