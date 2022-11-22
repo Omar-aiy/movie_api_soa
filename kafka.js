@@ -80,5 +80,5 @@ const runProducer = async () => {
     await producer.disconnect();
 };
 
-runConsumer();
-//module.exports = { runConsumer, sentConfirmation, runProducer };
+//runConsumer();
+module.exports = { runConsumer, sentConfirmation, runProducer };
