@@ -14,11 +14,7 @@ const runConsumer = async () => {
   
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
-      console.log(topic, partition, message);
-      const movie = JSON.parse(message.value.toString());
-      axios.post('https://movie-api-omar.herokuapp.com/movies', movie)
-        .then(response => console.log(response.data))
-        .catch(error => console.log(error.response.data));
+      console.log(JSON.parse(message.value));
     }
   })
 };
@@ -37,4 +33,4 @@ const runConsumerConfirmation = async () => {
   })
 };
 
-runConsumerConfirmation();
+runConsumer();

@@ -21,13 +21,13 @@ const runConsumer = async () => {
                 price: product.price
             };
             axios.post('https://movie-api-omar.herokuapp.com/movies', movie)
-                .then(async (response) => {
+                .then((response) => {
                     console.log(response.data);
-                    await sentConfirmation(orderId, tmpProductId, movie, "ok");
+                    sentConfirmation(orderId, tmpProductId, movie, "ok");
                 })
-                .catch(async (error) => { 
+                .catch((error) => { 
                     console.log(error.response.data);
-                    await sentConfirmation(orderId, tmpProductId, error.response.data, "nok");
+                    sentConfirmation(orderId, tmpProductId, error.response.data, "nok");
                 });
         }
     });
