@@ -1,4 +1,5 @@
 const bodyParser = require('body-parser');
+const cors = require('cors')
 require('dotenv').config();
 const express = require('express');
 const { getMovies, addMovie, editMovie, deleteMovie, getMovieByTitle } = require('./db');
@@ -23,7 +24,7 @@ const swaggerOpts = {
 const swaggerSpec = swaggerJSDoc(swaggerOpts);
 
 runConsumer();
-
+app.use(cors());
 app.use(bodyParser.json());
 app.use(logRequest)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
