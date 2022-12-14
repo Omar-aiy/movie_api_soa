@@ -8,10 +8,11 @@ client.connect().then(() => console.log("Connected to database")).catch(error =>
 
 const getMovies = async (page=1) => {
     const movies = await getMoviesAPI(page);
-    movies.forEach(async (movie) => {
-        addMovie(movie).then((res) => console.log(res)).catch(error => console.log(error.message))
-    });
     const { rows } = await client.query(`SELECT * FROM movie`);
+    if (rows.length == 0)
+        movies.forEach(async (movie) => {
+            addMovie(movie).then((res) => console.log(res)).catch(error => console.log(error.message))
+        });
     return rows;
 };
 
