@@ -49,7 +49,8 @@ const editOrAddMovie = async (id=0, {title, description, picture_url, price}, ad
     } else {
         const { rowCount } = await client.query(`UPDATE movie SET title=$1, description=$2, picture_url=$3, price=$4 WHERE id=$5`, [title, description, picture_url, price, id]);
         if (rowCount == 0) throw new Error("Failed to edit movie");
-        return "Edited successfully";
+        const {rows} = await client.query(`SELECT * FROM movie ORDER BY id DESC LIMIT 1`);
+        return rows;
     }
 };
 
