@@ -43,8 +43,9 @@ const editOrAddMovie = async (id=0, {title, description, picture_url, price}, ad
             const movie = await getMovieByTitle(title);
             return {message: "Added successfully", movie: movie};
         } catch (error) {
-            if (error.message.includes("duplicate key value violates unique constraint")) throw new Error("Movie already exists");
-            throw new Error("Failed to add movie")
+            console.log(error.message);
+            const movie = await getMovieByTitle(title)
+            return {message: "Added successfully", movie: movie};
         }
     } else {
         const { rowCount } = await client.query(`UPDATE movie SET title=$1, description=$2, picture_url=$3, price=$4 WHERE id=$5`, [title, description, picture_url, price, id]);
