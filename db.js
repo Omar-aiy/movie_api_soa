@@ -11,7 +11,7 @@ const getMovies = async (page=1) => {
     let array = [];
     movies.forEach(async (movie) => {
         addMovie(movie).then((res) => console.log(res)).catch(error => console.log(error.message))
-        array.push(movie);
+        array.push(await (getMovieByTitle(movie.title)));
     });
     return array;
 };
