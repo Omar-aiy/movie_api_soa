@@ -2,7 +2,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors')
 require('dotenv').config();
 const express = require('express');
-const { getMovies, addMovie, editMovie, deleteMovie, getMovieByTitle } = require('./db');
+const { getMovies, addMovie, editMovie, deleteMovie, getMovieByTitle, getMovieById } = require('./db');
 const { getMoviesAPI } = require('./exteren-api');
 const { success, fail } = require('./functions');
 const { logRequest } = require('./middleware');
@@ -146,6 +146,66 @@ app.get('/movies', (req, res) =>
 app.get('/movies/search', (req, res) => {
     const { title } = req.query;
     getMovieByTitle(title)
+        .then(response => res.send(success(response)))
+        .catch(error => res.status(400).send(fail(error.message)))
+});
+
+/**
+ * @swagger
+ * components:
+ *  schemas:
+ *     Movie:
+ *      type: object
+ *      properties:
+ *          description:
+ *              type: string
+ *          title:
+ *              type: string
+ *          picture_url:
+ *             type: string
+ *          price:
+ *             type: integer
+ * /movies/get/{id}:
+ *  get:
+ *      parameters:
+ *          - in: path
+ *            name: id
+ *            schema:
+ *                type: integer
+ *            required: true
+ *            example: 14253
+ *      description: Get movie by id
+ *      responses:
+ *          '200':
+ *              description: A successful response
+ *              content:
+ *                 application/json:
+ *                      schema:
+ *                         type: object
+ *                         properties:
+ *                              success:
+ *                                  type: boolean
+ *                                  example: true
+ *                              data:
+ *                                  type: object
+ *                                  $ref: '#/components/schemas/Movie'
+ *          '400':
+ *              description: Bad request error
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                         type: object
+ *                         properties:
+ *                              success:
+ *                                  type: boolean
+ *                                  example: false
+ *                              error:
+ *                                  type: string
+ *                                  example: No movie found
+*/
+app.get('/movies/get/:id', (req, res) => {
+    const { id } = req.params;
+    getMovieById(id)
         .then(response => res.send(success(response)))
         .catch(error => res.status(400).send(fail(error.message)))
 });
